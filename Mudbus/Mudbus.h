@@ -18,7 +18,10 @@
 
 //#define MbDebug
 
-#include "WProgram.h"
+// For Arduino 0022
+// #include "WProgram.h"
+// For Arduino 1.0
+#include "Arduino.h"
 
 #include <SPI.h>
 #include <Ethernet.h>
@@ -35,7 +38,10 @@ enum MB_FC {
   MB_FC_READ_COILS     = 1,
   MB_FC_READ_REGISTERS = 3,
   MB_FC_WRITE_COIL     = 5,
-  MB_FC_WRITE_REGISTER = 6
+  MB_FC_WRITE_REGISTER = 6,
+  //Function codes 15 & 16 by Martin Pettersson http://siamect.com
+  MB_FC_WRITE_MULTIPLE_COILS = 15,
+  MB_FC_WRITE_MULTIPLE_REGISTERS = 16
 };
 
 class Mudbus
