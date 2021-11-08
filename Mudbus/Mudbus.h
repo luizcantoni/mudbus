@@ -29,9 +29,19 @@
 #ifndef Mudbus_h
 #define Mudbus_h
 
+#ifndef MB_N_R
 #define MB_N_R 125 //Max 16 bit registers for Modbus is 125
+#endif
+
+#ifndef MB_N_C
 #define MB_N_C 128 //Max coils for Modbus is 2000 - dont need that many so here is a multiple of 8
+#endif
+
+#ifndef MB_PORT
 #define MB_PORT 502
+#endif
+
+#define MB_N_A	(MB_N_R * 2) + (MB_N_C / 8)
 
 enum MB_FC {
   MB_FC_NONE           = 0,
@@ -55,7 +65,7 @@ public:
   unsigned long PreviousActivityTime;
   int Runs, Reads, Writes;
 private: 
-  uint8_t ByteArray[260];
+  uint8_t ByteArray[MB_N_A + 10];
   MB_FC FC;
   void SetFC(int fc);
 };
