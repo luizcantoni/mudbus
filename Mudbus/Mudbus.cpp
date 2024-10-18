@@ -37,6 +37,11 @@ void Mudbus::Run()
   // For Arduino 1.0
   EthernetClient client = MbServer.available();
   if(client.available())
+  if(!client.connected())
+  {
+    client.stop();
+    return;
+  }
   {
     Reads = 1 + Reads * (Reads < 999);
     int i = 0;
@@ -91,7 +96,7 @@ void Mudbus::Run()
         bitWrite(ByteArray[9 + i], j, C[Start + i * 8 + j]);
       }
     }
-    MessageLength = ByteDataLength + 9;
+    MessageLength = 6 + ByteArray[5];
     client.write(ByteArray, MessageLength);
     Writes = 1 + Writes * (Writes < 999);
     FC = MB_FC_NONE;
@@ -116,7 +121,7 @@ void Mudbus::Run()
       ByteArray[ 9 + i * 2] = highByte(R[Start + i]);
       ByteArray[10 + i * 2] =  lowByte(R[Start + i]);
     }
-    MessageLength = ByteDataLength + 9;
+    MessageLength = 6 + ByteArray[5];
     client.write(ByteArray, MessageLength);
     Writes = 1 + Writes * (Writes < 999);
     FC = MB_FC_NONE;
@@ -133,8 +138,8 @@ void Mudbus::Run()
       Serial.print("=");
       Serial.println(C[Start]);
     #endif
-    ByteArray[5] = 2; //Number of bytes after this one.
-    MessageLength = 8;
+    ByteArray[5] = 6; //Number of bytes after this one.
+    MessageLength = 6 + ByteArray[5];
     client.write(ByteArray, MessageLength);
     Writes = 1 + Writes * (Writes < 999);
     FC = MB_FC_NONE;
@@ -152,7 +157,7 @@ void Mudbus::Run()
       Serial.println(R[Start]);
     #endif
     ByteArray[5] = 6; //Number of bytes after this one.
-    MessageLength = 12;
+    MessageLength = 6 + ByteArray[5];
     client.write(ByteArray, MessageLength);
     Writes = 1 + Writes * (Writes < 999);
     FC = MB_FC_NONE;
@@ -182,7 +187,7 @@ void Mudbus::Run()
         C[Start + i * 8 + j] = bitRead( ByteArray[13 + i], j);
       }
     }
-    MessageLength = 12;
+    MessageLength = 6 + ByteArray[5];
     client.write(ByteArray, MessageLength);
     Writes = 1 + Writes * (Writes < 999);
     FC = MB_FC_NONE;
@@ -207,7 +212,7 @@ void Mudbus::Run()
     {
       R[Start + i] =  word(ByteArray[ 13 + i * 2],ByteArray[14 + i * 2]);
     }
-    MessageLength = 12;
+    MessageLength = 6 + ByteArray[5];
     client.write(ByteArray, MessageLength);
     Writes = 1 + Writes * (Writes < 999);
     FC = MB_FC_NONE;
